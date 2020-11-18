@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Vuetify from 'vuetify';
-
-Vue.use(VueRouter)
-Vue.use(Vuetify);
-
+import '@fortawesome/fontawesome-free/css/all.css'
+import vuetify from './vuetify';
 import App from '../views/App.vue'
 import Home from '../views/Home'
+
+Vue.use(VueRouter)
 
 const router = new VueRouter({
     mode: 'history',
@@ -22,5 +21,6 @@ const router = new VueRouter({
 const app = new Vue({
     el: '#app',
     components: { App },
+    vuetify,
     router,
 });

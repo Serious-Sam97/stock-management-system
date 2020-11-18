@@ -1,3 +1,15 @@
 <template>
-  <p>This is the homepage</p>
+    <div>
+ASS
+    </div>
 </template>
+
+<script>
+    export default {
+        
+    }
+</script>
+
+<style lang="scss" scoped>
+
+</style>

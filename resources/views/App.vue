@@ -1,10 +1,9 @@
 <template>
     <div>
-        <h1>Vue Router Demo App</h1>
-
+        <header-menu/>
+        HI
         <p>
             <router-link :to="{ name: 'home' }">Home</router-link> |
-            <router-link :to="{ name: 'hello' }">Hello World</router-link>
         </p>
 
         <div class="container">
@@ -12,6 +11,13 @@
         </div>
     </div>
 </template>
+
 <script>
-    export default {}
+    import HeaderMenu from '../js/components/system-base/HeaderMenu.vue';
+    export default {
+        name: 'App',
+        components: {
+            HeaderMenu,
+        },
+    }
 </script>
