@@ -1,14 +1,14 @@
 <template>
     <div>
-        <header-menu/>
-        HI
-        <p>
-            <router-link :to="{ name: 'home' }">Home</router-link> |
-        </p>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
 
-        <div class="container">
-            <router-view></router-view>
-        </div>
+        <v-app>
+            <header-menu/>
+
+            <div class="container">
+                <router-view></router-view>
+            </div>
+        </v-app>
     </div>
 </template>
 

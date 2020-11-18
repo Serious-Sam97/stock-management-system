@@ -1,14 +1,21 @@
 <template>
     <div>
       <v-app-bar
-      color="deep-purple accent-4"
-      dark
-      prominent
+      color="teal"
+      sms
+      flat
+      tile
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>My files</v-toolbar-title>
+      <v-toolbar-title>{{$route.name}}</v-toolbar-title>
+      <v-toolbar-items></v-toolbar-items>
 
+      <v-spacer></v-spacer>
+      <h2 style="color: ; cursor: pointer" @click="this.$router.push('/Home')">
+          SMS - Stock Management System
+      </h2>
+    
       <v-spacer></v-spacer>
         
     </v-app-bar>
@@ -27,21 +34,13 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item>
-            <v-list-item-title>Foo</v-list-item-title>
+          <v-list-item 
+            @click="$router.push(menuItem.url)"
+            v-for="(menuItem, menuItemindex) in menuItens" :key="`menuItem-${menuItemindex}`"
+          >
+            <v-list-item-title>{{menuItem.name}}</v-list-item-title>
           </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>Bar</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>Fizz</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>Buzz</v-list-item-title>
-          </v-list-item>
+          
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -54,6 +53,20 @@
         data: () => ({
             drawer: false,
             group: null,
+            menuItens: [
+                {
+                    name: 'Home',
+                    url: '/'
+                },
+                {
+                    name: 'Products',
+                    url: '/products'
+                },
+                {
+                    name: 'Product History',
+                    url: '/product-history'
+                },
+            ]
         }),
 
         watch: {
@@ -63,13 +76,4 @@
         },
     }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
-
-
-
-
-
        

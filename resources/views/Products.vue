@@ -6,6 +6,10 @@
 
 <script>
     export default {
-        name: 'Home'
+        name: 'Products'
     }
 </script>
+
+<style lang="scss" scoped>
+
+</style>
