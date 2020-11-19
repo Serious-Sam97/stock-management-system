@@ -6,7 +6,11 @@
             <header-menu/>
 
             <div class="container">
-                <router-view></router-view>
+                <v-container>
+                    <v-card elevation="4" style="height: 100px" shaped color="#f2f2f2">
+                        <router-view></router-view>
+                    </v-card>
+                </v-container>
             </div>
         </v-app>
     </div>

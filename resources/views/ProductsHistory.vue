@@ -9,7 +9,3 @@
         name: 'ProductsHistory'
     }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
