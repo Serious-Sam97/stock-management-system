@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Application\Http\Controllers\ProductController;
+use App\Domain\Repositories\ProductRepository;
+use App\Infrastructure\Repositories\Product;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->when(ProductController::class)
+          ->needs(ProductRepository::class)
+          ->give(function () {
+              return new Product();
+          });
     }
 
     /**

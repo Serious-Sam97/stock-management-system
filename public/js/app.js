@@ -440,8 +440,48 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'Products'
+  name: 'Products',
+  data: function data() {
+    return {
+      products: []
+    };
+  }
 });
 
 /***/ }),
@@ -1888,7 +1928,75 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c(
+    "div",
+    { staticStyle: { "padding-top": "30px" } },
+    [
+      _vm.products.length > 0
+        ? _c("v-simple-table", {
+            scopedSlots: _vm._u(
+              [
+                {
+                  key: "default",
+                  fn: function() {
+                    return [
+                      _c("thead", [
+                        _c("tr", [
+                          _c("th", { staticClass: "text-left" }, [
+                            _vm._v("\n                Name\n            ")
+                          ]),
+                          _vm._v(" "),
+                          _c("th", { staticClass: "text-left" }, [
+                            _vm._v("\n                Price\n            ")
+                          ]),
+                          _vm._v(" "),
+                          _c("th", { staticClass: "text-left" }, [
+                            _vm._v("\n                Quantity\n            ")
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.products, function(product, productIndex) {
+                          return _c("tr", { key: "product-" + productIndex }, [
+                            _c("td", [_vm._v(_vm._s(product.name))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(product.price))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(product.quantity))])
+                          ])
+                        }),
+                        0
+                      )
+                    ]
+                  },
+                  proxy: true
+                }
+              ],
+              null,
+              false,
+              1090081041
+            )
+          })
+        : _c(
+            "div",
+            { staticStyle: { display: "flex", "justify-content": "center" } },
+            [
+              _c("v-btn", { attrs: { elevation: "2", rounded: "" } }, [
+                _c("i", {
+                  staticClass: "fas fa-plus-circle fa-2x",
+                  staticStyle: { color: "green", "margin-right": "5px" }
+                }),
+                _vm._v(" "),
+                _c("h2", [_vm._v("No products created")])
+              ])
+            ],
+            1
+          )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
