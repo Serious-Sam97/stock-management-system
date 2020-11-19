@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\SpaController;
+use App\Application\Http\Controllers\SpaController;
 use Illuminate\Support\Facades\Route;
 
 /*
