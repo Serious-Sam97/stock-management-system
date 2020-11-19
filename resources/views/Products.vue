@@ -40,6 +40,7 @@
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
         name: 'Products',
         data() {
@@ -47,9 +48,8 @@
                 products: [],
             }
         },
+        mounted () {
+            axios.get('/http://localhost:8000/api/test').then((data) => console.log(data.data));
+        },
     }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

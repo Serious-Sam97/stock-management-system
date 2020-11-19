@@ -4,13 +4,14 @@ namespace App\Domain\Entities;
 
 class Product
 {
-    private int $id;
+    private ?int $id;
     private string $name;
     private float $price;
     private int $quantity;
 
-    public function __construct(string $name, float $price, int $quantity)
+    public function __construct(string $name, float $price, int $quantity, ?int $id)
     {
+        $this->id = $id;
         $this->name = $name;
         $this->price = $price;
         $this->quantity = $quantity;
@@ -49,5 +50,10 @@ class Product
     public function getId() : int 
     {
         return $this->id;
+    }
+
+    public function setId(int $id) : void
+    {
+        $this->id = $id;
     }
 }
