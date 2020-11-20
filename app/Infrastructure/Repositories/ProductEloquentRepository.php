@@ -33,4 +33,9 @@ class ProductEloquentRepository implements ProductRepository
             'quantity' => $entitiesProduct->getQuantity()
         ]);
     }
+
+    public function destroy(int $productId) : void
+    {
+        Product::where('id', $productId)->delete();
+    }
 }

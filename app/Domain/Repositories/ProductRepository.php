@@ -10,5 +10,5 @@ interface ProductRepository
     public function index() : Collection;
     public function store(Product $product) : Product;
     public function update(Product $product) : void;
-    // public function destroy(int $id) : void;
+    public function destroy(int $id) : void;
 }

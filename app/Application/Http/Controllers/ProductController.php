@@ -38,4 +38,9 @@ class ProductController extends Controller
         $product = new Product($data['name'], (float)$data['price'], (int)$data['quantity'], $data['id']);
         $this->productRepository->update($product);
     }
+
+    public function destroy(int $productId) : void
+    {
+        $this->productRepository->destroy($productId);
+    }
 }

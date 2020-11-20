@@ -2399,6 +2399,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           return a.id > b.id ? 1 : -1;
         });
       });
+    },
+    deleteProduct: function deleteProduct(productIndex) {
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/products/".concat(this.products[productIndex].id)).then(function () {
+        return _this3.$delete(_this3.products, productIndex);
+      });
     }
   }
 });
@@ -4539,6 +4546,11 @@ var render = function() {
                                     staticStyle: {
                                       color: "red",
                                       cursor: "pointer"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteProduct(productIndex)
+                                      }
                                     }
                                   })
                                 : _vm._e()
@@ -4554,7 +4566,7 @@ var render = function() {
               ],
               null,
               false,
-              439770699
+              2165091183
             )
           })
         : _c(

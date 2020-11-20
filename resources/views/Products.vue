@@ -49,7 +49,7 @@
                         ></v-text-field>
                     </td>
                     <td><i v-if="product.save" @click="saveProduct(productIndex)" class="fas fa-save fa-lg" style="color: green; cursor:pointer"></i></td>
-                    <td><i v-if="product.id !== 0" class="fas fa-trash-alt fa-lg" style="color: red; cursor:pointer"></i></td>
+                    <td><i v-if="product.id !== 0" @click="deleteProduct(productIndex)" class="fas fa-trash-alt fa-lg" style="color: red; cursor:pointer"></i></td>
                 </tr>
             </tbody>
             </template>
@@ -122,6 +122,11 @@
                     return {...product, save: false};
                 }).sort((a, b) => a.id > b.id ? 1 : - 1));
             },
+            deleteProduct(productIndex){
+                axios.delete(`/api/products/${this.products[productIndex].id}`)
+                .then(() => this.$delete(this.products, productIndex)
+                );
+            }
         },
     }
 </script>
