@@ -56,4 +56,14 @@ class Product
     {
         $this->id = $id;
     }
+
+    public function toResponse() : array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'price' => $this->price,
+            'quantity' => $this->quantity,
+        ];
+    }
 }

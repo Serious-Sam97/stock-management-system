@@ -21,12 +21,12 @@ class ProductController extends Controller
         return $this->productRepository->index();
     }
 
-    public function store(Request $request) : Product
+    public function store(Request $request)
     {
         //TODO: Change Request TO LARAVEL VALIDATOR
 
         $data = $request->all();
         $product = new Product($data['name'], (float)$data['price'], (int)$data['quantity']);
-        return $this->productRepository->store($product);
+        return response()->json($this->productRepository->store($product)->toResponse());
     }
 }

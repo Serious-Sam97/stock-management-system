@@ -95,7 +95,7 @@
             }
         },
         mounted () {
-            axios.get('/api/products').then((data) => console.log(data.data));
+            this.getProducts();
         },
         methods: {
             addProduct() {
@@ -115,8 +115,13 @@
                 ];
             },
             saveProduct(productIndex){
-                axios.post('/api/products', this.products[productIndex]);
+                axios.post('/api/products', this.products[productIndex]).then(({data}) => {
+                    this.products[productIndex].id = data.id;
+                });
             },
+            getProducts(){
+                axios.get('/api/products').then(({data}) => this.products = data);
+            }
         },
     }
 </script>
