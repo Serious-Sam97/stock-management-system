@@ -29,4 +29,13 @@ class ProductController extends Controller
         $product = new Product($data['name'], (float)$data['price'], (int)$data['quantity']);
         return response()->json($this->productRepository->store($product)->toResponse());
     }
+
+    public function update(Request $request) : void
+    {
+        //TODO: Change Request TO LARAVEL VALIDATOR
+
+        $data = $request->all();
+        $product = new Product($data['name'], (float)$data['price'], (int)$data['quantity'], $data['id']);
+        $this->productRepository->update($product);
+    }
 }

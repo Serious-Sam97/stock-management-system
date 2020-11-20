@@ -2369,6 +2369,11 @@ __webpack_require__.r(__webpack_exports__);
     saveProduct: function saveProduct(productIndex) {
       var _this = this;
 
+      if (this.products[productIndex].id !== 0) {
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/products/".concat(this.products[productIndex].id), this.products[productIndex]);
+        return false;
+      }
+
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/products', this.products[productIndex]).then(function (_ref) {
         var data = _ref.data;
         _this.products[productIndex].id = data.id;

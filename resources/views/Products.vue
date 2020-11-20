@@ -115,13 +115,18 @@
                 ];
             },
             saveProduct(productIndex){
+
+                if(this.products[productIndex].id !== 0){
+                    axios.put(`/api/products/${this.products[productIndex].id}`, this.products[productIndex]);
+                    return false;
+                }
                 axios.post('/api/products', this.products[productIndex]).then(({data}) => {
                     this.products[productIndex].id = data.id;
                 });
             },
             getProducts(){
                 axios.get('/api/products').then(({data}) => this.products = data);
-            }
+            },
         },
     }
 </script>
