@@ -2251,7 +2251,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(v_money__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-//
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2358,25 +2363,27 @@ __webpack_require__.r(__webpack_exports__);
         'quantity': 0
       });
     },
-    rules: function rules(productIndex) {
-      var product = this.products[productIndex];
-      return [function (name) {
-        return !!product.name || 'Required.';
-      }, function (name) {
-        return product.name && product.name.length >= 3 || 'Min 3 characters';
-      }];
-    },
     saveProduct: function saveProduct(productIndex) {
       var _this = this;
 
+      var price = this.products[productIndex].price.replace('$', '').replaceAll(',', '');
+
       if (this.products[productIndex].id !== 0) {
-        axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/products/".concat(this.products[productIndex].id), this.products[productIndex]);
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/products/".concat(this.products[productIndex].id), _objectSpread(_objectSpread({}, this.products[productIndex]), {}, {
+          price: price
+        }))["finally"](function () {
+          return _this.products[productIndex].save = false;
+        });
         return false;
       }
 
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/products', this.products[productIndex]).then(function (_ref) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/products', _objectSpread(_objectSpread({}, this.products[productIndex]), {}, {
+        price: price
+      })).then(function (_ref) {
         var data = _ref.data;
         _this.products[productIndex].id = data.id;
+      })["finally"](function () {
+        return _this.products[productIndex].save = false;
       });
     },
     getProducts: function getProducts() {
@@ -2384,7 +2391,13 @@ __webpack_require__.r(__webpack_exports__);
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/products').then(function (_ref2) {
         var data = _ref2.data;
-        return _this2.products = data;
+        return _this2.products = data.map(function (product) {
+          return _objectSpread(_objectSpread({}, product), {}, {
+            save: false
+          });
+        }).sort(function (a, b) {
+          return a.id > b.id ? 1 : -1;
+        });
       });
     }
   }
@@ -4419,10 +4432,7 @@ var render = function() {
                               [
                                 _c("v-text-field", {
                                   staticStyle: { "margin-top": "-15px" },
-                                  attrs: {
-                                    rules: _vm.rules,
-                                    "hide-details": "auto"
-                                  },
+                                  attrs: { "hide-details": "auto" },
                                   on: {
                                     input: function($event) {
                                       product.save = true
@@ -4544,7 +4554,7 @@ var render = function() {
               ],
               null,
               false,
-              3041254781
+              439770699
             )
           })
         : _c(

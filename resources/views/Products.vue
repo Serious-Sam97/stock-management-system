@@ -28,7 +28,6 @@
                     <td>{{ product.id }}</td>
                     <td>
                         <v-text-field style="margin-top: -15px"
-                            :rules="rules"
                             hide-details="auto"
                             v-model="product.name"
                             @input="product.save = true"
@@ -106,26 +105,22 @@
                     'quantity': 0,
                 });
             },
-            rules(productIndex){
-                const product = this.products[productIndex];
-                
-                return [
-                    name => !!product.name || 'Required.',
-                    name => (product.name && product.name.length >= 3) || 'Min 3 characters',
-                ];
-            },
             saveProduct(productIndex){
+                const price = this.products[productIndex].price.replace('$','').replaceAll(',', '');
 
                 if(this.products[productIndex].id !== 0){
-                    axios.put(`/api/products/${this.products[productIndex].id}`, this.products[productIndex]);
+                    axios.put(`/api/products/${this.products[productIndex].id}`, {...this.products[productIndex], price})
+                    .finally(() => this.products[productIndex].save = false);
                     return false;
                 }
-                axios.post('/api/products', this.products[productIndex]).then(({data}) => {
+                axios.post('/api/products', {...this.products[productIndex], price}).then(({data}) => {
                     this.products[productIndex].id = data.id;
-                });
+                }).finally(() => this.products[productIndex].save = false);
             },
             getProducts(){
-                axios.get('/api/products').then(({data}) => this.products = data);
+                axios.get('/api/products').then(({data}) => this.products = data.map((product) => {
+                    return {...product, save: false};
+                }).sort((a, b) => a.id > b.id ? 1 : - 1));
             },
         },
     }
