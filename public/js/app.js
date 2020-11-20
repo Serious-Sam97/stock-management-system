@@ -2247,8 +2247,46 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! v-money */ "./node_modules/v-money/dist/v-money.js");
+/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(v_money__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2291,17 +2329,48 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Products',
   data: function data() {
     return {
-      products: []
+      products: [],
+      alert: false,
+      alertMessage: '',
+      money: {
+        decimal: '.',
+        thousands: ',',
+        prefix: '$ ',
+        precision: 2,
+        masked: false
+      }
     };
   },
   mounted: function mounted() {
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/http://localhost:8000/api/test').then(function (data) {
+    axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/products').then(function (data) {
       return console.log(data.data);
     });
+  },
+  methods: {
+    addProduct: function addProduct() {
+      this.products.push({
+        'id': 0,
+        'name': '',
+        'price': 0,
+        'quantity': 0
+      });
+    },
+    rules: function rules(productIndex) {
+      var product = this.products[productIndex];
+      return [function (name) {
+        return !!product.name || 'Required.';
+      }, function (name) {
+        return product.name && product.name.length >= 3 || 'Min 3 characters';
+      }];
+    },
+    saveProduct: function saveProduct(productIndex) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/products', this.products[productIndex]);
+    }
   }
 });
 
@@ -3525,6 +3594,538 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/v-mask/dist/v-mask.esm.js":
+/*!************************************************!*\
+  !*** ./node_modules/v-mask/dist/v-mask.esm.js ***!
+  \************************************************/
+/*! exports provided: default, VueMaskDirective, VueMaskFilter, VueMaskPlugin */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VueMaskDirective", function() { return directive; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VueMaskFilter", function() { return filter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VueMaskPlugin", function() { return plugin; });
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+var placeholderChar = '_';
+var strFunction = 'function';
+
+var emptyArray = [];
+function convertMaskToPlaceholder() {
+  var mask = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : emptyArray;
+  var placeholderChar$1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : placeholderChar;
+
+  if (!isArray(mask)) {
+    throw new Error('Text-mask:convertMaskToPlaceholder; The mask property must be an array.');
+  }
+
+  if (mask.indexOf(placeholderChar$1) !== -1) {
+    throw new Error('Placeholder character must not be used as part of the mask. Please specify a character ' + 'that is not present in your mask as your placeholder character.\n\n' + "The placeholder character that was received is: ".concat(JSON.stringify(placeholderChar$1), "\n\n") + "The mask that was received is: ".concat(JSON.stringify(mask)));
+  }
+
+  return mask.map(function (char) {
+    return char instanceof RegExp ? placeholderChar$1 : char;
+  }).join('');
+}
+function isArray(value) {
+  return Array.isArray && Array.isArray(value) || value instanceof Array;
+}
+var strCaretTrap = '[]';
+function processCaretTraps(mask) {
+  var indexes = [];
+  var indexOfCaretTrap;
+
+  while (indexOfCaretTrap = mask.indexOf(strCaretTrap), indexOfCaretTrap !== -1) {
+    indexes.push(indexOfCaretTrap);
+    mask.splice(indexOfCaretTrap, 1);
+  }
+
+  return {
+    maskWithoutCaretTraps: mask,
+    indexes: indexes
+  };
+}
+
+var emptyArray$1 = [];
+var emptyString = '';
+function conformToMask() {
+  var rawValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : emptyString;
+  var mask = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : emptyArray$1;
+  var config = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  if (!isArray(mask)) {
+    if (_typeof(mask) === strFunction) {
+      mask = mask(rawValue, config);
+      mask = processCaretTraps(mask).maskWithoutCaretTraps;
+    } else {
+      throw new Error('Text-mask:conformToMask; The mask property must be an array.');
+    }
+  }
+
+  var _config$guide = config.guide,
+      guide = _config$guide === void 0 ? true : _config$guide,
+      _config$previousConfo = config.previousConformedValue,
+      previousConformedValue = _config$previousConfo === void 0 ? emptyString : _config$previousConfo,
+      _config$placeholderCh = config.placeholderChar,
+      placeholderChar$1 = _config$placeholderCh === void 0 ? placeholderChar : _config$placeholderCh,
+      _config$placeholder = config.placeholder,
+      placeholder = _config$placeholder === void 0 ? convertMaskToPlaceholder(mask, placeholderChar$1) : _config$placeholder,
+      currentCaretPosition = config.currentCaretPosition,
+      keepCharPositions = config.keepCharPositions;
+  var suppressGuide = guide === false && previousConformedValue !== undefined;
+  var rawValueLength = rawValue.length;
+  var previousConformedValueLength = previousConformedValue.length;
+  var placeholderLength = placeholder.length;
+  var maskLength = mask.length;
+  var editDistance = rawValueLength - previousConformedValueLength;
+  var isAddition = editDistance > 0;
+  var indexOfFirstChange = currentCaretPosition + (isAddition ? -editDistance : 0);
+  var indexOfLastChange = indexOfFirstChange + Math.abs(editDistance);
+
+  if (keepCharPositions === true && !isAddition) {
+    var compensatingPlaceholderChars = emptyString;
+
+    for (var i = indexOfFirstChange; i < indexOfLastChange; i++) {
+      if (placeholder[i] === placeholderChar$1) {
+        compensatingPlaceholderChars += placeholderChar$1;
+      }
+    }
+
+    rawValue = rawValue.slice(0, indexOfFirstChange) + compensatingPlaceholderChars + rawValue.slice(indexOfFirstChange, rawValueLength);
+  }
+
+  var rawValueArr = rawValue.split(emptyString).map(function (char, i) {
+    return {
+      char: char,
+      isNew: i >= indexOfFirstChange && i < indexOfLastChange
+    };
+  });
+
+  for (var _i = rawValueLength - 1; _i >= 0; _i--) {
+    var char = rawValueArr[_i].char;
+
+    if (char !== placeholderChar$1) {
+      var shouldOffset = _i >= indexOfFirstChange && previousConformedValueLength === maskLength;
+
+      if (char === placeholder[shouldOffset ? _i - editDistance : _i]) {
+        rawValueArr.splice(_i, 1);
+      }
+    }
+  }
+
+  var conformedValue = emptyString;
+  var someCharsRejected = false;
+
+  placeholderLoop: for (var _i2 = 0; _i2 < placeholderLength; _i2++) {
+    var charInPlaceholder = placeholder[_i2];
+
+    if (charInPlaceholder === placeholderChar$1) {
+      if (rawValueArr.length > 0) {
+        while (rawValueArr.length > 0) {
+          var _rawValueArr$shift = rawValueArr.shift(),
+              rawValueChar = _rawValueArr$shift.char,
+              isNew = _rawValueArr$shift.isNew;
+
+          if (rawValueChar === placeholderChar$1 && suppressGuide !== true) {
+            conformedValue += placeholderChar$1;
+            continue placeholderLoop;
+          } else if (mask[_i2].test(rawValueChar)) {
+            if (keepCharPositions !== true || isNew === false || previousConformedValue === emptyString || guide === false || !isAddition) {
+              conformedValue += rawValueChar;
+            } else {
+              var rawValueArrLength = rawValueArr.length;
+              var indexOfNextAvailablePlaceholderChar = null;
+
+              for (var _i3 = 0; _i3 < rawValueArrLength; _i3++) {
+                var charData = rawValueArr[_i3];
+
+                if (charData.char !== placeholderChar$1 && charData.isNew === false) {
+                  break;
+                }
+
+                if (charData.char === placeholderChar$1) {
+                  indexOfNextAvailablePlaceholderChar = _i3;
+                  break;
+                }
+              }
+
+              if (indexOfNextAvailablePlaceholderChar !== null) {
+                conformedValue += rawValueChar;
+                rawValueArr.splice(indexOfNextAvailablePlaceholderChar, 1);
+              } else {
+                _i2--;
+              }
+            }
+
+            continue placeholderLoop;
+          } else {
+            someCharsRejected = true;
+          }
+        }
+      }
+
+      if (suppressGuide === false) {
+        conformedValue += placeholder.substr(_i2, placeholderLength);
+      }
+
+      break;
+    } else {
+      conformedValue += charInPlaceholder;
+    }
+  }
+
+  if (suppressGuide && isAddition === false) {
+    var indexOfLastFilledPlaceholderChar = null;
+
+    for (var _i4 = 0; _i4 < conformedValue.length; _i4++) {
+      if (placeholder[_i4] === placeholderChar$1) {
+        indexOfLastFilledPlaceholderChar = _i4;
+      }
+    }
+
+    if (indexOfLastFilledPlaceholderChar !== null) {
+      conformedValue = conformedValue.substr(0, indexOfLastFilledPlaceholderChar + 1);
+    } else {
+      conformedValue = emptyString;
+    }
+  }
+
+  return {
+    conformedValue: conformedValue,
+    meta: {
+      someCharsRejected: someCharsRejected
+    }
+  };
+}
+
+var NEXT_CHAR_OPTIONAL = {
+  __nextCharOptional__: true
+};
+var defaultMaskReplacers = {
+  '#': /\d/,
+  A: /[a-z]/i,
+  N: /[a-z0-9]/i,
+  '?': NEXT_CHAR_OPTIONAL,
+  X: /./
+};
+
+var stringToRegexp = function stringToRegexp(str) {
+  var lastSlash = str.lastIndexOf('/');
+  return new RegExp(str.slice(1, lastSlash), str.slice(lastSlash + 1));
+};
+
+var makeRegexpOptional = function makeRegexpOptional(charRegexp) {
+  return stringToRegexp(charRegexp.toString().replace(/.(\/)[gmiyus]{0,6}$/, function (match) {
+    return match.replace('/', '?/');
+  }));
+};
+
+var escapeIfNeeded = function escapeIfNeeded(char) {
+  return '[\\^$.|?*+()'.indexOf(char) > -1 ? "\\".concat(char) : char;
+};
+
+var charRegexp = function charRegexp(char) {
+  return new RegExp("/[".concat(escapeIfNeeded(char), "]/"));
+};
+
+var isRegexp = function isRegexp(entity) {
+  return entity instanceof RegExp;
+};
+
+var castToRegexp = function castToRegexp(char) {
+  return isRegexp(char) ? char : charRegexp(char);
+};
+
+function maskToRegExpMask(mask) {
+  var maskReplacers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultMaskReplacers;
+  return mask.map(function (char, index, array) {
+    var maskChar = maskReplacers[char] || char;
+    var previousChar = array[index - 1];
+    var previousMaskChar = maskReplacers[previousChar] || previousChar;
+
+    if (maskChar === NEXT_CHAR_OPTIONAL) {
+      return null;
+    }
+
+    if (previousMaskChar === NEXT_CHAR_OPTIONAL) {
+      return makeRegexpOptional(castToRegexp(maskChar));
+    }
+
+    return maskChar;
+  }).filter(Boolean);
+}
+
+function stringMaskToRegExpMask(stringMask) {
+  var maskReplacers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultMaskReplacers;
+  return maskToRegExpMask(stringMask.split(''), maskReplacers);
+}
+function arrayMaskToRegExpMask(arrayMask) {
+  var maskReplacers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultMaskReplacers;
+  var flattenedMask = arrayMask.map(function (part) {
+    if (part instanceof RegExp) {
+      return part;
+    }
+
+    if (typeof part === 'string') {
+      return part.split('');
+    }
+
+    return null;
+  }).filter(Boolean).reduce(function (mask, part) {
+    return mask.concat(part);
+  }, []);
+  return maskToRegExpMask(flattenedMask, maskReplacers);
+}
+
+var trigger = function trigger(el, type) {
+  var e = document.createEvent('HTMLEvents');
+  e.initEvent(type, true, true);
+  el.dispatchEvent(e);
+};
+var queryInputElementInside = function queryInputElementInside(el) {
+  return el instanceof HTMLInputElement ? el : el.querySelector('input') || el;
+};
+var isFunction = function isFunction(val) {
+  return typeof val === 'function';
+};
+var isString = function isString(val) {
+  return typeof val === 'string';
+};
+var isRegexp$1 = function isRegexp(val) {
+  return val instanceof RegExp;
+};
+
+function createOptions() {
+  var elementOptions = new Map();
+  var defaultOptions = {
+    previousValue: '',
+    mask: []
+  };
+
+  function get(el) {
+    return elementOptions.get(el) || _objectSpread2({}, defaultOptions);
+  }
+
+  function partiallyUpdate(el, newOptions) {
+    elementOptions.set(el, _objectSpread2(_objectSpread2({}, get(el)), newOptions));
+  }
+
+  function remove(el) {
+    elementOptions.delete(el);
+  }
+
+  return {
+    partiallyUpdate: partiallyUpdate,
+    remove: remove,
+    get: get
+  };
+}
+
+var options = createOptions();
+
+function triggerInputUpdate(el) {
+  trigger(el, 'input');
+}
+
+function updateValue(el) {
+  var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var value = el.value;
+
+  var _options$get = options.get(el),
+      previousValue = _options$get.previousValue,
+      mask = _options$get.mask;
+
+  var isValueChanged = value !== previousValue;
+  var isLengthIncreased = value.length > previousValue.length;
+  var isUpdateNeeded = value && isValueChanged && isLengthIncreased;
+
+  if ((force || isUpdateNeeded) && mask) {
+    var _conformToMask = conformToMask(value, mask, {
+      guide: false
+    }),
+        conformedValue = _conformToMask.conformedValue;
+
+    el.value = conformedValue;
+    triggerInputUpdate(el);
+  }
+
+  options.partiallyUpdate(el, {
+    previousValue: value
+  });
+}
+
+function updateMask(el, inputMask, maskReplacers) {
+  var mask;
+
+  if (Array.isArray(inputMask)) {
+    mask = arrayMaskToRegExpMask(inputMask, maskReplacers);
+  } else if (isFunction(inputMask)) {
+    mask = inputMask;
+  } else if (isString(inputMask) && inputMask.length > 0) {
+    mask = stringMaskToRegExpMask(inputMask, maskReplacers);
+  } else {
+    mask = inputMask;
+  }
+
+  options.partiallyUpdate(el, {
+    mask: mask
+  });
+}
+
+function extendMaskReplacers(maskReplacers) {
+  var baseMaskReplacers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultMaskReplacers;
+
+  if (maskReplacers === null || Array.isArray(maskReplacers) || _typeof(maskReplacers) !== 'object') {
+    return baseMaskReplacers;
+  }
+
+  return Object.keys(maskReplacers).reduce(function (extendedMaskReplacers, key) {
+    var value = maskReplacers[key];
+
+    if (value !== null && !(value instanceof RegExp)) {
+      return extendedMaskReplacers;
+    }
+
+    return _objectSpread2(_objectSpread2({}, extendedMaskReplacers), {}, _defineProperty({}, key, value));
+  }, baseMaskReplacers);
+}
+
+function maskToString(mask) {
+  var maskArray = Array.isArray(mask) ? mask : [mask];
+  var filteredMaskArray = maskArray.filter(function (part) {
+    return isString(part) || isRegexp$1(part);
+  });
+  return filteredMaskArray.toString();
+}
+
+function createDirective() {
+  var directiveOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var instanceMaskReplacers = extendMaskReplacers(directiveOptions && directiveOptions.placeholders);
+  return {
+    bind: function bind(el, _ref) {
+      var value = _ref.value;
+      el = queryInputElementInside(el);
+      updateMask(el, value, instanceMaskReplacers);
+      updateValue(el);
+    },
+    componentUpdated: function componentUpdated(el, _ref2) {
+      var value = _ref2.value,
+          oldValue = _ref2.oldValue;
+      el = queryInputElementInside(el);
+      var isMaskChanged = isFunction(value) || maskToString(oldValue) !== maskToString(value);
+
+      if (isMaskChanged) {
+        updateMask(el, value, instanceMaskReplacers);
+      }
+
+      updateValue(el, isMaskChanged);
+    },
+    unbind: function unbind(el) {
+      el = queryInputElementInside(el);
+      options.remove(el);
+    }
+  };
+}
+var directive = createDirective();
+
+var filter = (function (value, stringMask) {
+  var mask = stringMaskToRegExpMask(stringMask);
+
+  var _conformToMask = conformToMask(value, mask, {
+    guide: false
+  }),
+      conformedValue = _conformToMask.conformedValue;
+
+  return conformedValue;
+});
+
+var plugin = (function (Vue) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  Vue.directive('mask', createDirective(options));
+  Vue.filter('VMask', filter);
+});
+
+/* harmony default export */ __webpack_exports__["default"] = (plugin);
+
+
+
+/***/ }),
+
+/***/ "./node_modules/v-money/dist/v-money.js":
+/*!**********************************************!*\
+  !*** ./node_modules/v-money/dist/v-money.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function(e,t){ true?module.exports=t():undefined})(this,function(){return function(e){function t(r){if(n[r])return n[r].exports;var i=n[r]={i:r,l:!1,exports:{}};return e[r].call(i.exports,i,i.exports,t),i.l=!0,i.exports}var n={};return t.m=e,t.c=n,t.i=function(e){return e},t.d=function(e,n,r){t.o(e,n)||Object.defineProperty(e,n,{configurable:!1,enumerable:!0,get:r})},t.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(n,"a",n),n},t.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},t.p=".",t(t.s=9)}([function(e,t,n){"use strict";t.a={prefix:"",suffix:"",thousands:",",decimal:".",precision:2}},function(e,t,n){"use strict";var r=n(2),i=n(5),u=n(0);t.a=function(e,t){if(t.value){var o=n.i(i.a)(u.a,t.value);if("INPUT"!==e.tagName.toLocaleUpperCase()){var a=e.getElementsByTagName("input");1!==a.length||(e=a[0])}e.oninput=function(){var t=e.value.length-e.selectionEnd;e.value=n.i(r.a)(e.value,o),t=Math.max(t,o.suffix.length),t=e.value.length-t,t=Math.max(t,o.prefix.length+1),n.i(r.b)(e,t),e.dispatchEvent(n.i(r.c)("change"))},e.onfocus=function(){n.i(r.b)(e,e.value.length-o.suffix.length)},e.oninput(),e.dispatchEvent(n.i(r.c)("input"))}}},function(e,t,n){"use strict";function r(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:m.a;"number"==typeof e&&(e=e.toFixed(o(t.precision)));var n=e.indexOf("-")>=0?"-":"",r=u(e),i=c(r,t.precision),a=d(i).split("."),p=a[0],l=a[1];return p=f(p,t.thousands),t.prefix+n+s(p,l,t.decimal)+t.suffix}function i(e,t){var n=e.indexOf("-")>=0?-1:1,r=u(e),i=c(r,t);return parseFloat(i)*n}function u(e){return d(e).replace(/\D+/g,"")||"0"}function o(e){return a(0,e,20)}function a(e,t,n){return Math.max(e,Math.min(t,n))}function c(e,t){var n=Math.pow(10,t);return(parseFloat(e)/n).toFixed(o(t))}function f(e,t){return e.replace(/(\d)(?=(?:\d{3})+\b)/gm,"$1"+t)}function s(e,t,n){return t?e+n+t:e}function d(e){return e?e.toString():""}function p(e,t){var n=function(){e.setSelectionRange(t,t)};e===document.activeElement&&(n(),setTimeout(n,1))}function l(e){var t=document.createEvent("Event");return t.initEvent(e,!0,!0),t}var m=n(0);n.d(t,"a",function(){return r}),n.d(t,"d",function(){return i}),n.d(t,"b",function(){return p}),n.d(t,"c",function(){return l})},function(e,t,n){"use strict";function r(e,t){t&&Object.keys(t).map(function(e){a.a[e]=t[e]}),e.directive("money",o.a),e.component("money",u.a)}Object.defineProperty(t,"__esModule",{value:!0});var i=n(6),u=n.n(i),o=n(1),a=n(0);n.d(t,"Money",function(){return u.a}),n.d(t,"VMoney",function(){return o.a}),n.d(t,"options",function(){return a.a}),n.d(t,"VERSION",function(){return c});var c="0.8.1";t.default=r,"undefined"!=typeof window&&window.Vue&&window.Vue.use(r)},function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r=n(1),i=n(0),u=n(2);t.default={name:"Money",props:{value:{required:!0,type:[Number,String],default:0},masked:{type:Boolean,default:!1},precision:{type:Number,default:function(){return i.a.precision}},decimal:{type:String,default:function(){return i.a.decimal}},thousands:{type:String,default:function(){return i.a.thousands}},prefix:{type:String,default:function(){return i.a.prefix}},suffix:{type:String,default:function(){return i.a.suffix}}},directives:{money:r.a},data:function(){return{formattedValue:""}},watch:{value:{immediate:!0,handler:function(e,t){var r=n.i(u.a)(e,this.$props);r!==this.formattedValue&&(this.formattedValue=r)}}},methods:{change:function(e){this.$emit("input",this.masked?e.target.value:n.i(u.d)(e.target.value,this.precision))}}}},function(e,t,n){"use strict";t.a=function(e,t){return e=e||{},t=t||{},Object.keys(e).concat(Object.keys(t)).reduce(function(n,r){return n[r]=void 0===t[r]?e[r]:t[r],n},{})}},function(e,t,n){var r=n(7)(n(4),n(8),null,null);e.exports=r.exports},function(e,t){e.exports=function(e,t,n,r){var i,u=e=e||{},o=typeof e.default;"object"!==o&&"function"!==o||(i=e,u=e.default);var a="function"==typeof u?u.options:u;if(t&&(a.render=t.render,a.staticRenderFns=t.staticRenderFns),n&&(a._scopeId=n),r){var c=a.computed||(a.computed={});Object.keys(r).forEach(function(e){var t=r[e];c[e]=function(){return t}})}return{esModule:i,exports:u,options:a}}},function(e,t){e.exports={render:function(){var e=this,t=e.$createElement;return(e._self._c||t)("input",{directives:[{name:"money",rawName:"v-money",value:{precision:e.precision,decimal:e.decimal,thousands:e.thousands,prefix:e.prefix,suffix:e.suffix},expression:"{precision, decimal, thousands, prefix, suffix}"}],staticClass:"v-money",attrs:{type:"tel"},domProps:{value:e.formattedValue},on:{change:e.change}})},staticRenderFns:[]}},function(e,t,n){e.exports=n(3)}])});
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/system-base/HeaderMenu.vue?vue&type=template&id=acfbbbd2&":
 /*!*************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/system-base/HeaderMenu.vue?vue&type=template&id=acfbbbd2& ***!
@@ -3764,16 +4365,30 @@ var render = function() {
                       _c("thead", [
                         _c("tr", [
                           _c("th", { staticClass: "text-left" }, [
-                            _vm._v("\n                Name\n            ")
+                            _vm._v("\n                    Id\n                ")
                           ]),
                           _vm._v(" "),
                           _c("th", { staticClass: "text-left" }, [
-                            _vm._v("\n                Price\n            ")
+                            _vm._v(
+                              "\n                    Name\n                "
+                            )
                           ]),
                           _vm._v(" "),
                           _c("th", { staticClass: "text-left" }, [
-                            _vm._v("\n                Quantity\n            ")
-                          ])
+                            _vm._v(
+                              "\n                    Price\n                "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("th", { staticClass: "text-left" }, [
+                            _vm._v(
+                              "\n                    Quantity\n                "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("th", { staticClass: "text-left" }),
+                          _vm._v(" "),
+                          _c("th", { staticClass: "text-left" })
                         ])
                       ]),
                       _vm._v(" "),
@@ -3781,11 +4396,127 @@ var render = function() {
                         "tbody",
                         _vm._l(_vm.products, function(product, productIndex) {
                           return _c("tr", { key: "product-" + productIndex }, [
-                            _c("td", [_vm._v(_vm._s(product.name))]),
+                            _c("td", [_vm._v(_vm._s(product.id))]),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(product.price))]),
+                            _c(
+                              "td",
+                              [
+                                _c("v-text-field", {
+                                  staticStyle: { "margin-top": "-15px" },
+                                  attrs: {
+                                    rules: _vm.rules,
+                                    "hide-details": "auto"
+                                  },
+                                  on: {
+                                    input: function($event) {
+                                      product.save = true
+                                    }
+                                  },
+                                  model: {
+                                    value: product.name,
+                                    callback: function($$v) {
+                                      _vm.$set(product, "name", $$v)
+                                    },
+                                    expression: "product.name"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(product.quantity))])
+                            _c(
+                              "td",
+                              [
+                                _c("v-text-field", {
+                                  directives: [
+                                    {
+                                      name: "money",
+                                      rawName: "v-money",
+                                      value: _vm.money,
+                                      expression: "money"
+                                    }
+                                  ],
+                                  staticStyle: { "margin-top": "-15px" },
+                                  attrs: { "hide-details": "auto" },
+                                  on: {
+                                    blur: function($event) {
+                                      product.save = true
+                                    }
+                                  },
+                                  model: {
+                                    value: product.price,
+                                    callback: function($$v) {
+                                      _vm.$set(product, "price", $$v)
+                                    },
+                                    expression: "product.price"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              [
+                                _c("v-text-field", {
+                                  directives: [
+                                    {
+                                      name: "mask",
+                                      rawName: "v-mask",
+                                      value: "######",
+                                      expression: "'######'"
+                                    }
+                                  ],
+                                  staticStyle: {
+                                    "margin-top": "-15px",
+                                    "max-width": "90px"
+                                  },
+                                  attrs: { "hide-details": "auto" },
+                                  on: {
+                                    blur: function($event) {
+                                      product.save = true
+                                    }
+                                  },
+                                  model: {
+                                    value: product.quantity,
+                                    callback: function($$v) {
+                                      _vm.$set(product, "quantity", $$v)
+                                    },
+                                    expression: "product.quantity"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c("td", [
+                              product.save
+                                ? _c("i", {
+                                    staticClass: "fas fa-save fa-lg",
+                                    staticStyle: {
+                                      color: "green",
+                                      cursor: "pointer"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.saveProduct(productIndex)
+                                      }
+                                    }
+                                  })
+                                : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              product.id !== 0
+                                ? _c("i", {
+                                    staticClass: "fas fa-trash-alt fa-lg",
+                                    staticStyle: {
+                                      color: "red",
+                                      cursor: "pointer"
+                                    }
+                                  })
+                                : _vm._e()
+                            ])
                           ])
                         }),
                         0
@@ -3797,24 +4528,65 @@ var render = function() {
               ],
               null,
               false,
-              1090081041
+              3041254781
             )
           })
         : _c(
             "div",
-            { staticStyle: { display: "flex", "justify-content": "center" } },
+            {
+              staticStyle: {
+                display: "flex",
+                "justify-content": "center",
+                "margin-top": "-20px"
+              }
+            },
+            [_c("h3", [_vm._v("No products created")])]
+          ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticStyle: {
+            display: "flex",
+            "justify-content": "center",
+            "margin-top": "5px"
+          }
+        },
+        [
+          _c(
+            "v-btn",
+            {
+              attrs: { elevation: "2", rounded: "" },
+              on: { click: _vm.addProduct }
+            },
             [
-              _c("v-btn", { attrs: { elevation: "2", rounded: "" } }, [
-                _c("i", {
-                  staticClass: "fas fa-plus-circle fa-2x",
-                  staticStyle: { color: "green", "margin-right": "5px" }
-                }),
-                _vm._v(" "),
-                _c("h2", [_vm._v("No products created")])
-              ])
-            ],
-            1
+              _c("i", {
+                staticClass: "fas fa-plus-circle fa-2x",
+                staticStyle: { color: "green", "margin-right": "5px" }
+              }),
+              _vm._v(" "),
+              _c("h3", [_vm._v("Create product")])
+            ]
           )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _vm.alert
+        ? _c(
+            "v-alert",
+            {
+              staticStyle: { "margin-top": "30px", cursor: "pointer" },
+              attrs: { border: "left", icon: "$mdiAccount", type: "error" },
+              on: {
+                click: function($event) {
+                  _vm.alert = false
+                }
+              }
+            },
+            [_vm._v(_vm._s(_vm.alertMessage))]
+          )
+        : _vm._e()
     ],
     1
   )
@@ -63253,6 +64025,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _views_Home_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../views/Home.vue */ "./resources/views/Home.vue");
 /* harmony import */ var _views_Products_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../views/Products.vue */ "./resources/views/Products.vue");
 /* harmony import */ var _views_ProductsHistory_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../views/ProductsHistory.vue */ "./resources/views/ProductsHistory.vue");
+/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! v-money */ "./node_modules/v-money/dist/v-money.js");
+/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(v_money__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var v_mask__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! v-mask */ "./node_modules/v-mask/dist/v-mask.esm.js");
 
 
 
@@ -63262,6 +64037,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(v_mask__WEBPACK_IMPORTED_MODULE_10__["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(v_money__WEBPACK_IMPORTED_MODULE_9___default.a, {
+  precision: 2
+});
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',

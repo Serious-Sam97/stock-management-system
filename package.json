@@ -28,6 +28,8 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",
+        "v-mask": "^2.2.3",
+        "v-money": "^0.8.1",
         "vue-router": "^3.4.9",
         "vuetify": "^2.3.18"
     }

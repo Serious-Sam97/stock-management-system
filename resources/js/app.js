@@ -7,7 +7,11 @@ import App from '../views/App.vue'
 import Home from '../views/Home.vue'
 import Products from '../views/Products.vue'
 import ProductsHistory from '../views/ProductsHistory.vue'
+import money from 'v-money'
+import VueMask from 'v-mask'
 
+Vue.use(VueMask);
+Vue.use(money, {precision: 2})
 Vue.use(VueRouter)
 
 const router = new VueRouter({

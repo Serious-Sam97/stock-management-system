@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/test', function (Request $request) {
-    return 1431431;
-});
+Route::middleware('api')->apiResource('/products', ProductController::class);

@@ -23,12 +23,24 @@ class Product extends Model implements ProductRepository
         return Product::all();
     }
 
-    public function store(EntitiesProduct $entitiesProduct) : void
+    public function store(EntitiesProduct $entitiesProduct) : EntitiesProduct
     {
-        Product::create([
+        $entitiesProduct->setId(Product::create([
             'name' => $entitiesProduct->getname(),
             'price' => $entitiesProduct->getPrice(),
             'quantity' => $entitiesProduct->getQuantity()
-        ]);
+        ])->id);
+
+        return $entitiesProduct;
     }
+
+    // public function update(EntitiesProduct $entitiesProduct) : void
+    // {
+    //     // $product = P
+    //     // Product::update([
+    //     //     'name' => $entitiesProduct->getname(),
+    //     //     'price' => $entitiesProduct->getPrice(),
+    //     //     'quantity' => $entitiesProduct->getQuantity()
+    //     // ]);
+    // }
 }

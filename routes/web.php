@@ -15,6 +15,3 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/{any}', SpaController::class . '@index')->where('any', '.*');
-Route::apiResource('/api/test', function() {
-    return 4244424;
-});
