@@ -2346,20 +2346,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     saveProduct: function saveProduct(productIndex) {
       var _this = this;
 
-      var price = this.products[productIndex].price.replace('$', '').replaceAll(',', '');
+      var price = parseFloat(this.products[productIndex].price.replace('$', '').replaceAll(',', ''));
+
+      var product = _objectSpread(_objectSpread({}, this.products[productIndex]), {}, {
+        'quanitty': parseInt(this.products[productIndex].quantity),
+        price: price
+      });
+
+      console.log(product);
 
       if (this.products[productIndex].id !== 0) {
-        axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/products/".concat(this.products[productIndex].id), _objectSpread(_objectSpread({}, this.products[productIndex]), {}, {
-          price: price
-        }))["finally"](function () {
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/products/".concat(this.products[productIndex].id), product)["finally"](function () {
           return _this.products[productIndex].save = false;
         });
         return false;
       }
 
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/products', _objectSpread(_objectSpread({}, this.products[productIndex]), {}, {
-        price: price
-      })).then(function (_ref) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/products', product).then(function (_ref) {
         var data = _ref.data;
         _this.products[productIndex].id = data.id;
       })["finally"](function () {

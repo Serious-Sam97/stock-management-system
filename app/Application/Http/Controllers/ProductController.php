@@ -4,8 +4,8 @@ namespace App\Application\Http\Controllers;
 
 use App\Domain\Entities\Product;
 use App\Domain\Repositories\ProductRepositoryInterface;
+use App\Http\Requests\ProductStoreRequest;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -21,21 +21,17 @@ class ProductController extends Controller
         return $this->productRepository->index();
     }
 
-    public function store(Request $request)
+    public function store(ProductStoreRequest $request)
     {
-        //TODO: Change Request TO LARAVEL VALIDATOR
-
         $data = $request->all();
-        $product = new Product($data['name'], (float)$data['price'], (int)$data['quantity']);
+        $product = new Product($data['name'], $data['price'], $data['quantity']);
         return response()->json($this->productRepository->store($product)->toResponse());
     }
 
-    public function update(Request $request) : void
+    public function update(ProductStoreRequest $request) : void
     {
-        //TODO: Change Request TO LARAVEL VALIDATOR
-
         $data = $request->all();
-        $product = new Product($data['name'], (float)$data['price'], (int)$data['quantity'], $data['id']);
+        $product = new Product($data['name'], $data['price'], $data['quantity'], $data['id']);
         $this->productRepository->update($product);
     }
 

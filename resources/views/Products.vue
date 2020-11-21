@@ -110,14 +110,17 @@
                 });
             },
             saveProduct(productIndex){
-                const price = this.products[productIndex].price.replace('$','').replaceAll(',', '');
+                const price = parseFloat(this.products[productIndex].price.replace('$','').replaceAll(',', ''));
+                const product = {...this.products[productIndex], 'quanitty': parseInt(this.products[productIndex].quantity), price};
+
+                console.log(product);
 
                 if(this.products[productIndex].id !== 0){
-                    axios.put(`/api/products/${this.products[productIndex].id}`, {...this.products[productIndex], price})
+                    axios.put(`/api/products/${this.products[productIndex].id}`, product)
                     .finally(() => this.products[productIndex].save = false);
                     return false;
                 }
-                axios.post('/api/products', {...this.products[productIndex], price}).then(({data}) => {
+                axios.post('/api/products', product).then(({data}) => {
                     this.products[productIndex].id = data.id;
                 }).finally(() => this.products[productIndex].save = false);
             },
