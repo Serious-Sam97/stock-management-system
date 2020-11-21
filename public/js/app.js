@@ -2311,6 +2311,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2318,8 +2320,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       products: [],
-      alert: false,
-      alertMessage: '',
       money: {
         decimal: '.',
         thousands: ',',
@@ -2331,6 +2331,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   mounted: function mounted() {
     this.getProducts();
+  },
+  computed: {
+    bulkProducts: function bulkProducts() {
+      return this.products.filter(function (product) {
+        return product.save;
+      });
+    }
   },
   methods: {
     addProduct: function addProduct() {
@@ -2349,11 +2356,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var price = parseFloat(this.products[productIndex].price.replace('$', '').replaceAll(',', ''));
 
       var product = _objectSpread(_objectSpread({}, this.products[productIndex]), {}, {
-        'quanitty': parseInt(this.products[productIndex].quantity),
+        'quantity': parseInt(this.products[productIndex].quantity),
         price: price
       });
-
-      console.log(product);
 
       if (this.products[productIndex].id !== 0) {
         axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/products/".concat(this.products[productIndex].id), product)["finally"](function () {
@@ -2400,6 +2405,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.products[productIndex].error = false;
       this.products[productIndex].save = true;
+    },
+    bulkCreateUpdate: function bulkCreateUpdate() {
+      var _this4 = this;
+
+      var products = this.bulkProducts.map(function (product) {
+        return _objectSpread(_objectSpread({}, product), {}, {
+          price: parseFloat(product.price.replace('$', '').replaceAll(',', '')),
+          quantity: parseInt(product.quantity)
+        });
+      });
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/bulk-create-update', products)["finally"](function () {
+        _this4.products = [];
+
+        _this4.getProducts();
+      });
     }
   }
 });
@@ -4521,7 +4541,7 @@ var render = function() {
                                   attrs: { "hide-details": "auto" },
                                   on: {
                                     blur: function($event) {
-                                      product.save = true
+                                      return _vm.saveValidator(productIndex)
                                     }
                                   },
                                   model: {
@@ -4555,7 +4575,7 @@ var render = function() {
                                   attrs: { "hide-details": "auto" },
                                   on: {
                                     blur: function($event) {
-                                      product.save = true
+                                      return _vm.saveValidator(productIndex)
                                     }
                                   },
                                   model: {
@@ -4614,7 +4634,7 @@ var render = function() {
               ],
               null,
               false,
-              3554180374
+              2855842934
             )
           })
         : _c(
@@ -4640,39 +4660,60 @@ var render = function() {
         },
         [
           _c(
-            "v-btn",
-            {
-              attrs: { elevation: "2", rounded: "" },
-              on: { click: _vm.addProduct }
-            },
+            "div",
+            { staticStyle: { display: "flex", "justify-content": "center" } },
             [
-              _c("i", {
-                staticClass: "fas fa-plus-circle fa-2x",
-                staticStyle: { color: "green", "margin-right": "5px" }
-              }),
-              _vm._v(" "),
-              _c("h3", [_vm._v("Create product")])
-            ]
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _vm.alert
-        ? _c(
-            "v-alert",
-            {
-              staticStyle: { "margin-top": "30px", cursor: "pointer" },
-              attrs: { border: "left", icon: "$mdiAccount", type: "error" },
-              on: {
-                click: function($event) {
-                  _vm.alert = false
-                }
-              }
-            },
-            [_vm._v(_vm._s(_vm.alertMessage))]
-          )
-        : _vm._e()
+              _c(
+                "v-btn",
+                {
+                  attrs: { elevation: "2", rounded: "" },
+                  on: { click: _vm.addProduct }
+                },
+                [
+                  _c("i", {
+                    staticClass: "fas fa-plus-circle fa-2x",
+                    staticStyle: { color: "green", "margin-right": "5px" }
+                  }),
+                  _vm._v(" "),
+                  _c("h3", [_vm._v("Create product")])
+                ]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _vm.bulkProducts.length > 1
+            ? _c(
+                "div",
+                {
+                  staticStyle: {
+                    display: "flex",
+                    "justify-content": "center",
+                    "margin-left": "15px"
+                  }
+                },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { elevation: "2", rounded: "" },
+                      on: { click: _vm.bulkCreateUpdate }
+                    },
+                    [
+                      _c("i", {
+                        staticClass: "fas fa-box-open fa-2x",
+                        staticStyle: { color: "gray", "margin-right": "5px" }
+                      }),
+                      _vm._v(" "),
+                      _c("h3", [_vm._v("Bulk create/update")])
+                    ]
+                  )
+                ],
+                1
+              )
+            : _vm._e()
+        ]
+      )
     ],
     1
   )

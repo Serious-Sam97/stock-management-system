@@ -39,7 +39,7 @@
                         <v-text-field style="margin-top: -15px"
                             v-model.lazy="product.price" v-money="money"
                             hide-details="auto"
-                            @blur="product.save = true"
+                            @blur="saveValidator(productIndex)"
                         ></v-text-field>
                     </td>
                     <td>  
@@ -47,7 +47,7 @@
                             v-mask="'######'"
                             v-model="product.quantity"
                             hide-details="auto"
-                            @blur="product.save = true"
+                            @blur="saveValidator(productIndex)"
                         ></v-text-field>
                     </td>
                     <td><i v-if="product.save" @click="saveProduct(productIndex)" class="fas fa-save fa-lg" style="color: green; cursor:pointer"></i></td>
@@ -59,20 +59,22 @@
         <div v-else style="display: flex; justify-content: center; margin-top: -20px">
             <h3>No products created</h3>
         </div>
-
         <div style="display: flex; justify-content: center; margin-top: 5px">
-            <v-btn @click="addProduct"
-            elevation="2"
-            rounded
-            ><i style="color: green;margin-right: 5px" class="fas fa-plus-circle fa-2x"></i>
-            <h3>Create product</h3></v-btn>
+            <div style="display: flex; justify-content: center;">
+                <v-btn @click="addProduct"
+                elevation="2"
+                rounded
+                ><i style="color: green;margin-right: 5px" class="fas fa-plus-circle fa-2x"></i>
+                <h3>Create product</h3></v-btn>
+            </div>
+            <div style="display: flex; justify-content: center; margin-left: 15px" v-if="bulkProducts.length > 1">
+                <v-btn @click="bulkCreateUpdate"
+                elevation="2"
+                rounded
+                ><i style="color: gray;margin-right: 5px" class="fas fa-box-open fa-2x"></i>
+                <h3>Bulk create/update</h3></v-btn>
+            </div>
         </div>
-        <v-alert style="margin-top: 30px; cursor:pointer" v-if="alert"
-        @click="alert = false"
-        border="left"
-        icon="$mdiAccount"
-        type="error"
-        >{{alertMessage}}</v-alert>
     </div>
 </template>
 
@@ -84,8 +86,6 @@
         data() {
             return {
                 products: [],
-                alert: false,
-                alertMessage: '',
                  money: {
                     decimal: '.',
                     thousands: ',',
@@ -97,6 +97,11 @@
         },
         mounted () {
             this.getProducts();
+        },
+        computed: {
+            bulkProducts() {
+                return this.products.filter((product) => product.save);
+            }
         },
         methods: {
             addProduct() {
@@ -111,9 +116,7 @@
             },
             saveProduct(productIndex){
                 const price = parseFloat(this.products[productIndex].price.replace('$','').replaceAll(',', ''));
-                const product = {...this.products[productIndex], 'quanitty': parseInt(this.products[productIndex].quantity), price};
-
-                console.log(product);
+                const product = {...this.products[productIndex], 'quantity': parseInt(this.products[productIndex].quantity), price};
 
                 if(this.products[productIndex].id !== 0){
                     axios.put(`/api/products/${this.products[productIndex].id}`, product)
@@ -142,7 +145,16 @@
                 }
                 this.products[productIndex].error = false;
                 this.products[productIndex].save = true;
-            }
+            },
+            bulkCreateUpdate(){
+                const products = this.bulkProducts.map(product => {
+                    return {...product, price: parseFloat(product.price.replace('$','').replaceAll(',', '')), quantity: parseInt(product.quantity)}
+                });
+                axios.post('/api/bulk-create-update', products).finally(() => {
+                    this.products = [];
+                    this.getProducts();
+                });
+            },
         },
     }
 </script>

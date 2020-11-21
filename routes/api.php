@@ -18,3 +18,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('api')->apiResource('/products', ProductController::class);
 Route::middleware('api')->get('/product-quantity-history', ProductQuantityHistoryController::class . '@index');
+Route::middleware('api')->post('/bulk-create-update', ProductController::class . '@bulkProducts');
