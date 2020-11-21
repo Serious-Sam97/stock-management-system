@@ -4,9 +4,9 @@ namespace App\Infrastructure\Repositories;
 
 use App\Domain\Entities\Product as EntitiesProduct;
 use Illuminate\Database\Eloquent\Collection;
-use App\Domain\Repositories\ProductRepository;
+use App\Domain\Repositories\ProductRepositoryInterface;
 
-class ProductEloquentRepository implements ProductRepository
+class ProductEloquentRepository implements ProductRepositoryInterface
 {
     public function index() : Collection
     {
