@@ -30,8 +30,10 @@
                         <v-text-field style="margin-top: -15px"
                             hide-details="auto"
                             v-model="product.name"
-                            @input="product.save = true"
+                            @input="saveValidator(productIndex)"
+                            @blur="saveValidator(productIndex)"
                         ></v-text-field>
+                        <h5 v-if="product.error" style="color: red; margin-top: 3px">Name is required</h5>
                     </td>
                     <td>
                         <v-text-field style="margin-top: -15px"
@@ -104,6 +106,7 @@
                     'price': 0,
                     'quantity': 0,
                     'save': false,
+                    'error' : false,
                 });
             },
             saveProduct(productIndex){
@@ -120,13 +123,22 @@
             },
             getProducts(){
                 axios.get('/api/products').then(({data}) => this.products = data.map((product) => {
-                    return {...product, save: false};
+                    return {...product, save: false, error: false};
                 }).sort((a, b) => a.id > b.id ? 1 : - 1));
             },
             deleteProduct(productIndex){
                 axios.delete(`/api/products/${this.products[productIndex].id}`)
                 .then(() => this.$delete(this.products, productIndex)
                 );
+            },
+            saveValidator(productIndex){
+                if(this.products[productIndex].name === ''){
+                    this.products[productIndex].error = true;
+                    this.products[productIndex].save = false;
+                    return false;
+                }
+                this.products[productIndex].error = false;
+                this.products[productIndex].save = true;
             }
         },
     }
