@@ -103,6 +103,7 @@
                     'name': '',
                     'price': 0,
                     'quantity': 0,
+                    'save': false,
                 });
             },
             saveProduct(productIndex){

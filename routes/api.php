@@ -1,6 +1,7 @@
 <?php
 
 use App\Application\Http\Controllers\ProductController;
+use App\Application\Http\Controllers\ProductQuantityHistoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('api')->apiResource('/products', ProductController::class);
+Route::middleware('api')->get('/product-quantity-history', ProductQuantityHistoryController::class . '@index');

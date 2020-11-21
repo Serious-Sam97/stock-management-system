@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 interface ProductQuantityHistoryRepositoryInterface
 {
     public function index() : Collection;
-    public function store(ProductQuantityHistory $productQuantityHistory) : ProductQuantityHistory;
+    public function store(ProductQuantityHistory $productQuantityHistory) : void;
     public function update(ProductQuantityHistory $productQuantityHistory) : void;
     public function destroy(int $id) : void;
 }

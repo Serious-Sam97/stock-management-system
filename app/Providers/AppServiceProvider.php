@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Application\Http\Controllers\ProductController;
-use App\Domain\Repositories\ProductRepository;
+use App\Application\Http\Controllers\ProductQuantityHistoryController;
+use App\Domain\Repositories\ProductQuantityHistoryRepositoryInterface;
+use App\Domain\Repositories\ProductRepositoryInterface;
 use App\Infrastructure\Repositories\ProductEloquentRepository;
+use App\Infrastructure\Repositories\ProductQuantityHistoryEloquentRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,10 +20,16 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->when(ProductController::class)
-          ->needs(ProductRepository::class)
+          ->needs(ProductRepositoryInterface::class)
           ->give(function () {
               return new ProductEloquentRepository();
-          });
+        });
+        
+        $this->app->when(ProductQuantityHistoryController::class)
+        ->needs(ProductQuantityHistoryRepositoryInterface::class)
+        ->give(function () {
+            return new ProductQuantityHistoryEloquentRepository();
+        });
     }
 
     /**
