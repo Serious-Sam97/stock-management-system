@@ -4,7 +4,6 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import 'vuetify/dist/vuetify.min.css'
 import vuetify from './vuetify';
 import App from '../views/App.vue'
-import Home from '../views/Home.vue'
 import Products from '../views/Products.vue'
 import ProductsHistory from '../views/ProductsHistory.vue'
 import money from 'v-money'
@@ -19,8 +18,8 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',
-            name: 'Home',
-            component: Home,
+            name: 'Products',
+            component: Products,
         },
         {
             path: '/products',

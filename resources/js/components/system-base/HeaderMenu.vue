@@ -55,10 +55,6 @@
             group: null,
             menuItens: [
                 {
-                    name: 'Home',
-                    url: '/'
-                },
-                {
                     name: 'Products',
                     url: '/products'
                 },
@@ -68,7 +64,6 @@
                 },
             ]
         }),
-
         watch: {
             group () {
                 this.drawer = false

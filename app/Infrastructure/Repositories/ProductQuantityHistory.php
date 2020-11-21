@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repositories;
 use App\Infrastructure\Repositories\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductQuantityHistory extends Model
 {
@@ -16,8 +16,8 @@ class ProductQuantityHistory extends Model
         'quantity',
     ];
 
-    public function product() : HasOne
+    public function product() : BelongsTo
     {
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Product::class);
     }
 }

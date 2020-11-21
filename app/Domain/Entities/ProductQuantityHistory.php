@@ -4,11 +4,11 @@ namespace App\Domain\Entities;
 
 class ProductQuantityHistory
 {
-    private int $id;
+    private ?int $id;
     private int $productId;
     private int $quantity;
 
-    public function __construct(int $id, int $productId, int $quantity)
+    public function __construct(?int $id, int $productId, int $quantity)
     {
         $this->id = $id;
         $this->productId = $productId;

@@ -11,7 +11,7 @@ class ProductQuantityHistoryEloquentRepository implements ProductQuantityHistory
 {
     public function index() : Collection
     {
-        return ProductQuantityHistory::all();
+        return ProductQuantityHistory::with('product')->get();
     }
 
     public function store(EntitiesProductQuantityHistory  $productQuantityHistory) : void
